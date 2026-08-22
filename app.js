@@ -9,6 +9,7 @@ let currentReview = [];
 let reviewIndex = 0;
 let reviewMode = "imageToKorean";
 let currentViewMode = localStorage.getItem("vocabViewMode") || "gallery";
+let deferredInstallPrompt = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -402,6 +403,37 @@ async function importData(file) {
   alert("Import xong.");
 }
 
+
+function isStandalone() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function setPWANotice(text) {
+  const el = $("pwaNotice");
+  if (!el) return;
+  if (!text) {
+    el.classList.add("hidden");
+    el.textContent = "";
+  } else {
+    el.textContent = text;
+    el.classList.remove("hidden");
+  }
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  const btn = $("installBtn");
+  if (btn && !isStandalone()) btn.classList.remove("hidden");
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  const btn = $("installBtn");
+  if (btn) btn.classList.add("hidden");
+  setPWANotice("App đã được cài trên thiết bị này.");
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
   db = await openDB();
   applyTheme(localStorage.getItem("vocabTheme") || "light");
@@ -410,6 +442,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => switchView(t.dataset.view)));
   $("openAddBtn").addEventListener("click", () => openWordDialog());
+
+  $("installBtn").addEventListener("click", async () => {
+    if (!deferredInstallPrompt) {
+      setPWANotice("Trình duyệt chưa cung cấp nút cài app. Hãy thử Chrome/Edge và mở trang bằng HTTPS trên GitHub Pages.");
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    try {
+      await deferredInstallPrompt.userChoice;
+    } catch {}
+    deferredInstallPrompt = null;
+    $("installBtn").classList.add("hidden");
+  });
+
+  if (isStandalone()) {
+    $("installBtn").classList.add("hidden");
+    setPWANotice("");
+  }
   $("emptyAddBtn").addEventListener("click", () => openWordDialog());
   $("closeDialogBtn").addEventListener("click", () => $("wordDialog").close());
   $("cancelBtn").addEventListener("click", () => $("wordDialog").close());
@@ -506,5 +556,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+  window.addEventListener("load", async () => {
+    try {
+      const reg = await navigator.serviceWorker.register("./sw.js", { scope: "./" });
+      reg.update().catch(() => {});
+    } catch (err) {
+      console.warn("Service worker registration failed:", err);
+    }
+  });
 }

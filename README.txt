@@ -1,30 +1,38 @@
-KOREAN VISUAL VOCABULARY — V1
+KOREAN VISUAL VOCABULARY — V1.1
+GitHub Pages + PWA edition
 
-Cách chạy nhanh:
-1. Giải nén file ZIP.
-2. Cách tốt nhất: mở thư mục bằng VS Code và chạy Live Server.
-3. Hoặc chạy local server:
-   - Windows có Python:
-     python -m http.server 8000
-   - Sau đó mở http://localhost:8000
+FILES TO UPLOAD TO YOUR EXISTING GITHUB REPO:
+- index.html
+- styles.css
+- app.js
+- sw.js
+- manifest.webmanifest
+- icon-192.png
+- icon-512.png
+- favicon.png
 
-Tính năng V1:
-- Add / edit / delete vocabulary
-- Image upload, drag & drop, paste bằng Ctrl+V
-- Korean + Vietnamese meaning
-- Tags và trạng thái New / Learning / Learned
-- Search và filter
-- Gallery / List view
-- Review: Image → Korean
-- Review: Korean → Meaning
-- Review: Browse / Recall
-- Random 10 / 20 / 50 / all
-- Import / Export backup JSON
-- Local IndexedDB storage
-- Light / Dark mode
-- PWA/offline caching khi chạy qua localhost hoặc HTTPS
+HOW TO UPDATE YOUR EXISTING GITHUB PAGES SITE:
+1. Open your existing repository on GitHub.
+2. Choose Add file → Upload files.
+3. Drag ALL files above into the repository root.
+4. GitHub will replace index.html/styles.css/app.js/sw.js/manifest.webmanifest.
+5. Commit changes.
+6. Wait about 1–3 minutes and reopen the GitHub Pages URL.
+7. Hard refresh once: Ctrl + Shift + R.
 
-Lưu ý:
-- Dữ liệu nằm trong trình duyệt trên thiết bị đang dùng.
-- Hãy Export backup định kỳ.
-- Nếu xóa dữ liệu trình duyệt/site data, kho từ có thể bị mất nếu chưa backup.
+PWA:
+- Open the GitHub Pages URL in Chrome or Edge.
+- After the service worker and manifest are detected, an Install app button may appear in the website header.
+- Chrome/Edge may also show an install icon in the address bar.
+- Once installed, the site opens in its own app window.
+- Core app files are cached for offline use.
+
+DATA:
+- Vocabulary remains stored in IndexedDB in the browser/device.
+- Installing the PWA does NOT sync data between laptop and phone.
+- Export JSON backups regularly.
+- Do not clear the browser/site storage unless you have a backup.
+
+GITHUB PAGES:
+All file paths are relative (./), so this build is safe to host in a repository subpath such as:
+https://USERNAME.github.io/korean-visual-vocab/

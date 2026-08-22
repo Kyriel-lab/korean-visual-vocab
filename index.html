@@ -4,8 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#f6f5f2" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Korean Vocab" />
   <title>Korean Visual Vocabulary</title>
-  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="./favicon.png" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -21,6 +26,7 @@
         Import
         <input id="importFile" type="file" accept=".json,application/json" hidden />
       </label>
+      <button id="installBtn" class="ghost-btn hidden">Install app</button>
       <button id="openAddBtn" class="primary-btn">＋ Add word</button>
     </div>
   </header>
@@ -51,6 +57,8 @@
 
         <button id="clearFiltersBtn" class="ghost-btn compact">Clear</button>
       </div>
+
+      <div id="pwaNotice" class="pwa-notice hidden"></div>
 
       <div class="summary-row">
         <div id="statsText">0 words</div>

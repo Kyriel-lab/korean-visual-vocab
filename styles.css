@@ -185,3 +185,14 @@ summary { cursor:pointer; font-weight:700; }
   .review-card { padding:16px; }
   .review-prompt { font-size:30px; }
 }
+
+
+.pwa-notice {
+  margin: 8px 0 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
