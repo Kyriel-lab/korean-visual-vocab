@@ -103,6 +103,115 @@ function compressImage(file, maxSide = 1500, quality = 0.84) {
   });
 }
 
+
+const MINUTE = 60 * 1000;
+const DAY = 24 * 60 * 60 * 1000;
+
+function defaultSRS(word = {}) {
+  const now = Date.now();
+  const raw = word.srs || {};
+  return {
+    dueAt: Number.isFinite(raw.dueAt) ? raw.dueAt : now,
+    intervalDays: Number.isFinite(raw.intervalDays) ? raw.intervalDays : 0,
+    ease: Number.isFinite(raw.ease) ? raw.ease : 2.5,
+    repetitions: Number.isFinite(raw.repetitions) ? raw.repetitions : 0,
+    lapses: Number.isFinite(raw.lapses) ? raw.lapses : 0,
+    lastReviewedAt: Number.isFinite(raw.lastReviewedAt) ? raw.lastReviewedAt : null
+  };
+}
+
+function isDue(word, now = Date.now()) {
+  return defaultSRS(word).dueAt <= now;
+}
+
+function intervalForRating(word, rating) {
+  const s = defaultSRS(word);
+  const reps = s.repetitions;
+  const current = Math.max(0, s.intervalDays);
+  const ease = Math.max(1.3, s.ease);
+
+  if (rating === "again") return 10 / (60 * 24); // 10 minutes
+  if (rating === "hard") {
+    if (reps === 0 || current < 1) return 1;
+    return Math.max(1, current * 1.2);
+  }
+  if (rating === "good") {
+    if (reps === 0) return 1;
+    if (reps === 1) return 3;
+    return Math.max(1, current * ease);
+  }
+  if (rating === "easy") {
+    if (reps === 0) return 4;
+    if (reps === 1) return 7;
+    return Math.max(2, current * ease * 1.3);
+  }
+  return 1;
+}
+
+function formatInterval(days) {
+  const minutes = Math.round(days * 24 * 60);
+  if (minutes < 60) return `${Math.max(1, minutes)}m`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  if (days < 30) return `${Math.max(1, Math.round(days))}d`;
+  if (days < 365) return `${Math.round(days / 30)}mo`;
+  return `${(days / 365).toFixed(days >= 730 ? 1 : 2)}y`;
+}
+
+function previewIntervals(word) {
+  $("againInterval").textContent = formatInterval(intervalForRating(word, "again"));
+  $("hardInterval").textContent = formatInterval(intervalForRating(word, "hard"));
+  $("goodInterval").textContent = formatInterval(intervalForRating(word, "good"));
+  $("easyInterval").textContent = formatInterval(intervalForRating(word, "easy"));
+}
+
+async function applySRSRating(word, rating) {
+  const now = Date.now();
+  const s = defaultSRS(word);
+  const nextDays = intervalForRating(word, rating);
+
+  if (rating === "again") {
+    s.repetitions = 0;
+    s.lapses += 1;
+    s.ease = Math.max(1.3, s.ease - 0.20);
+  } else if (rating === "hard") {
+    s.repetitions += 1;
+    s.ease = Math.max(1.3, s.ease - 0.15);
+  } else if (rating === "good") {
+    s.repetitions += 1;
+  } else if (rating === "easy") {
+    s.repetitions += 1;
+    s.ease = Math.min(3.2, s.ease + 0.15);
+  }
+
+  s.intervalDays = nextDays;
+  s.lastReviewedAt = now;
+  s.dueAt = now + nextDays * DAY;
+  word.srs = s;
+
+  if (rating === "again" || rating === "hard") {
+    word.status = "learning";
+  } else {
+    word.status = nextDays >= 21 ? "learned" : "learning";
+  }
+
+  word.updatedAt = now;
+  await putWord(word);
+}
+
+function nextDueText(words) {
+  if (!words.length) return "";
+  const next = Math.min(...words.map(w => defaultSRS(w).dueAt));
+  const delta = next - Date.now();
+  if (delta <= 0) return "Due now";
+  const minutes = Math.ceil(delta / MINUTE);
+  if (minutes < 60) return `Next in ${minutes}m`;
+  const hours = Math.ceil(minutes / 60);
+  if (hours < 24) return `Next in ${hours}h`;
+  const days = Math.ceil(hours / 24);
+  return `Next in ${days}d`;
+}
+
 async function refresh() {
   allWords = (await getAllWords()).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
   rebuildTagOptions();
@@ -142,7 +251,16 @@ function renderWords() {
     learning: allWords.filter(w => w.status === "learning").length,
     learned: allWords.filter(w => w.status === "learned").length
   };
-  $("statsText").textContent = `${words.length} shown · ${allWords.length} total · ${counts.learning} learning · ${counts.learned} learned`;
+  const dueCount = allWords.filter(w => isDue(w)).length;
+  $("statsText").textContent = `${words.length} shown · ${allWords.length} total · ${dueCount} due · ${counts.learning} learning · ${counts.learned} learned`;
+  const quickDue = $("quickDueBtn");
+  if (dueCount > 0) {
+    quickDue.textContent = `Review ${dueCount} due ${dueCount === 1 ? "word" : "words"} →`;
+    quickDue.classList.remove("hidden");
+  } else {
+    quickDue.textContent = nextDueText(allWords);
+    quickDue.classList.toggle("hidden", !allWords.length);
+  }
 
   for (const word of words) {
     const node = $("cardTemplate").content.firstElementChild.cloneNode(true);
@@ -232,19 +350,34 @@ function shuffle(arr) {
   return a;
 }
 
-function startReview() {
+function startReview(forceDue = false) {
   reviewMode = $("reviewMode").value;
+  const source = forceDue ? "due" : $("reviewSource").value;
   const status = $("reviewStatus").value;
   const tag = $("reviewTag").value;
-  let pool = allWords.filter(w => (!status || w.status === status) && (!tag || (w.tags || []).includes(tag)));
+
+  let pool = allWords.filter(w =>
+    (!status || w.status === status) &&
+    (!tag || (w.tags || []).includes(tag))
+  );
+
+  if (source === "due") {
+    pool = pool.filter(w => isDue(w));
+  }
 
   if (reviewMode === "imageToKorean") {
     pool = pool.filter(w => !!w.image);
   }
+
   if (!pool.length) {
-    alert(reviewMode === "imageToKorean"
-      ? "Không có từ phù hợp có hình ảnh. Hãy thêm ảnh hoặc đổi bộ lọc."
-      : "Không có từ phù hợp với bộ lọc.");
+    const basePool = allWords.filter(w =>
+      (!status || w.status === status) &&
+      (!tag || (w.tags || []).includes(tag))
+    );
+    const message = source === "due"
+      ? (basePool.length ? `Không có từ nào đến hạn lúc này. ${nextDueText(basePool)}.` : "Không có từ phù hợp với bộ lọc.")
+      : (reviewMode === "imageToKorean" ? "Không có từ phù hợp có hình ảnh. Hãy thêm ảnh hoặc đổi bộ lọc." : "Không có từ phù hợp với bộ lọc.");
+    alert(message);
     return;
   }
 
@@ -265,11 +398,14 @@ function renderReviewCard() {
         <div class="eyebrow">DONE</div>
         <h2>Review complete</h2>
         <p class="muted">${currentReview.length} words reviewed.</p>
-        <button class="primary-btn" id="reviewAgainBtn">Review again</button>
+        <button class="primary-btn" id="reviewAgainBtn">Back to review</button>
       </div>`;
     $("reviewProgress").textContent = `${currentReview.length} / ${currentReview.length}`;
     $("progressBar").style.width = "100%";
-    document.getElementById("reviewAgainBtn").addEventListener("click", () => location.reload());
+    document.getElementById("reviewAgainBtn").addEventListener("click", () => {
+      exitReview();
+      location.reload();
+    });
     return;
   }
 
@@ -282,13 +418,11 @@ function renderReviewCard() {
   const imgPh = $("reviewImagePlaceholder");
   const form = $("answerForm");
   const reveal = $("revealArea");
-  const browseActions = $("browseActions");
-  const nextBtn = $("nextReviewBtn");
+  const srsActions = $("srsActions");
   const input = $("answerInput");
 
   reveal.classList.add("hidden");
-  browseActions.classList.add("hidden");
-  nextBtn.classList.add("hidden");
+  srsActions.classList.add("hidden");
   input.value = "";
 
   if (w.image) {
@@ -321,7 +455,8 @@ function renderReviewCard() {
     reveal.innerHTML = `<button id="revealBrowseBtn" class="ghost-btn">Reveal answer</button>`;
     document.getElementById("revealBrowseBtn").addEventListener("click", () => {
       reveal.innerHTML = answerHTML(w);
-      browseActions.classList.remove("hidden");
+      previewIntervals(w);
+      srsActions.classList.remove("hidden");
     });
   }
 }
@@ -336,14 +471,6 @@ function answerHTML(w, feedback = "") {
   return `${feedback}<div class="big">${escapeHTML(w.korean)}</div><div>${escapeHTML(w.meaning)}</div>${details}`;
 }
 
-async function markAndNext(status) {
-  const w = currentReview[reviewIndex];
-  w.status = status;
-  w.updatedAt = Date.now();
-  await putWord(w);
-  reviewIndex++;
-  renderReviewCard();
-}
 
 function exitReview() {
   $("reviewSession").classList.add("hidden");
@@ -395,6 +522,7 @@ async function importData(file) {
       pronunciation: raw.pronunciation || "",
       example: raw.example || "",
       notes: raw.notes || "",
+      srs: defaultSRS(raw),
       createdAt: raw.createdAt || Date.now(),
       updatedAt: Date.now()
     });
@@ -507,6 +635,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       pronunciation: $("pronunciationInput").value.trim(),
       example: $("exampleInput").value.trim(),
       notes: $("notesInput").value.trim(),
+      srs: existing?.srs || defaultSRS(),
       createdAt: existing?.createdAt || now,
       updatedAt: now
     };
@@ -524,7 +653,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     await refresh();
   });
 
-  $("startReviewBtn").addEventListener("click", startReview);
+  $("startReviewBtn").addEventListener("click", () => startReview(false));
+  $("quickDueBtn").addEventListener("click", () => {
+    switchView("review");
+    $("reviewSource").value = "due";
+    startReview(true);
+  });
   $("exitReviewBtn").addEventListener("click", exitReview);
 
   $("answerForm").addEventListener("submit", e => {
@@ -536,16 +670,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     const feedback = `<div style="font-weight:800;margin-bottom:9px">${correct ? "✓ Correct" : "Not quite"}</div>`;
     $("revealArea").innerHTML = answerHTML(w, feedback);
     $("revealArea").classList.remove("hidden");
-    $("nextReviewBtn").classList.remove("hidden");
+    previewIntervals(w);
+    $("srsActions").classList.remove("hidden");
   });
 
-  $("nextReviewBtn").addEventListener("click", () => {
-    reviewIndex++;
-    renderReviewCard();
+  document.querySelectorAll(".srs-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const w = currentReview[reviewIndex];
+      await applySRSRating(w, btn.dataset.rating);
+      reviewIndex++;
+      renderReviewCard();
+    });
   });
-
-  $("forgotBtn").addEventListener("click", () => markAndNext("learning"));
-  $("rememberedBtn").addEventListener("click", () => markAndNext("learned"));
 
   $("themeBtn").addEventListener("click", () => {
     applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");

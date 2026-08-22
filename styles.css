@@ -196,3 +196,60 @@ summary { cursor:pointer; font-weight:700; }
   color: var(--muted);
   font-size: 13px;
 }
+
+
+.due-link {
+  border: 0;
+  padding: 0;
+  margin-top: 5px;
+  background: transparent;
+  color: var(--text);
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.srs-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+  margin: 22px auto 0;
+  max-width: 620px;
+}
+
+.srs-btn {
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 11px 8px 9px;
+  background: var(--panel);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-weight: 800;
+}
+
+.srs-btn:hover {
+  border-color: var(--text);
+  transform: translateY(-1px);
+}
+
+.srs-btn small {
+  color: var(--muted);
+  font-weight: 650;
+  font-size: 11px;
+}
+
+.srs-btn.good {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.srs-btn.good small { color: inherit; opacity: .72; }
+
+@media (max-width: 560px) {
+  .srs-actions { grid-template-columns: repeat(2, 1fr); }
+}

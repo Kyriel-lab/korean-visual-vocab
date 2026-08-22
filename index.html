@@ -61,7 +61,10 @@
       <div id="pwaNotice" class="pwa-notice hidden"></div>
 
       <div class="summary-row">
-        <div id="statsText">0 words</div>
+        <div>
+          <div id="statsText">0 words</div>
+          <button id="quickDueBtn" class="due-link hidden">Review due words</button>
+        </div>
         <div class="view-toggle">
           <button id="galleryBtn" class="mini-toggle active">▦ Gallery</button>
           <button id="listBtn" class="mini-toggle">☷ List</button>
@@ -87,6 +90,14 @@
         </div>
 
         <div class="review-options">
+          <label>
+            Review set
+            <select id="reviewSource">
+              <option value="due" selected>Spaced repetition · Due now</option>
+              <option value="all">All matching words</option>
+            </select>
+          </label>
+
           <label>
             Mode
             <select id="reviewMode">
@@ -151,12 +162,20 @@
 
           <div id="revealArea" class="reveal-area hidden"></div>
 
-          <div id="browseActions" class="browse-actions hidden">
-            <button id="forgotBtn" class="ghost-btn">Forgot</button>
-            <button id="rememberedBtn" class="primary-btn">Remembered</button>
+          <div id="srsActions" class="srs-actions hidden">
+            <button class="srs-btn again" data-rating="again">
+              <span>Again</span><small id="againInterval">10m</small>
+            </button>
+            <button class="srs-btn hard" data-rating="hard">
+              <span>Hard</span><small id="hardInterval">1d</small>
+            </button>
+            <button class="srs-btn good" data-rating="good">
+              <span>Good</span><small id="goodInterval">3d</small>
+            </button>
+            <button class="srs-btn easy" data-rating="easy">
+              <span>Easy</span><small id="easyInterval">7d</small>
+            </button>
           </div>
-
-          <button id="nextReviewBtn" class="primary-btn hidden">Next →</button>
         </article>
       </div>
     </section>

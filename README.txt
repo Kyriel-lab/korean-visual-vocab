@@ -1,38 +1,38 @@
-KOREAN VISUAL VOCABULARY — V1.1
-GitHub Pages + PWA edition
+KOREAN VISUAL VOCABULARY — V1.2
+Spaced Repetition edition
 
-FILES TO UPLOAD TO YOUR EXISTING GITHUB REPO:
-- index.html
-- styles.css
-- app.js
-- sw.js
-- manifest.webmanifest
-- icon-192.png
-- icon-512.png
-- favicon.png
+NEW IN V1.2
+- Spaced repetition review queue
+- Every vocabulary item has:
+  dueAt, intervalDays, ease, repetitions, lapses, lastReviewedAt
+- Old V1/V1.1 words remain compatible and are treated as due immediately
+- Dashboard shows how many words are due now
+- Review defaults to "Spaced repetition · Due now"
+- After revealing/checking an answer, choose:
+  Again / Hard / Good / Easy
+- Each button shows the next interval before you choose it
+- Again schedules the word again in about 10 minutes
+- Hard / Good / Easy progressively increase the interval
+- Existing random/all review remains available
+- Export/import preserves spaced-repetition progress
 
-HOW TO UPDATE YOUR EXISTING GITHUB PAGES SITE:
-1. Open your existing repository on GitHub.
-2. Choose Add file → Upload files.
-3. Drag ALL files above into the repository root.
-4. GitHub will replace index.html/styles.css/app.js/sw.js/manifest.webmanifest.
-5. Commit changes.
-6. Wait about 1–3 minutes and reopen the GitHub Pages URL.
-7. Hard refresh once: Ctrl + Shift + R.
+HOW TO UPDATE YOUR EXISTING GITHUB PAGES SITE
+1. Open your repository: Kyriel-lab/korean-visual-vocab
+2. Add file → Upload files
+3. Upload ALL files from this V1.2 folder
+4. Replace files when GitHub prompts
+5. Commit changes
+6. Wait 1–3 minutes
+7. Open the GitHub Pages website
+8. Press Ctrl + Shift + R once
 
-PWA:
-- Open the GitHub Pages URL in Chrome or Edge.
-- After the service worker and manifest are detected, an Install app button may appear in the website header.
-- Chrome/Edge may also show an install icon in the address bar.
-- Once installed, the site opens in its own app window.
-- Core app files are cached for offline use.
+IMPORTANT
+- Your vocabulary data is stored in browser IndexedDB, not in the repository.
+- Updating the website files should not erase existing vocabulary.
+- Export a JSON backup before major browser/storage changes.
+- GitHub Pages + installed PWA on the same site origin use the same underlying site storage.
+- Data still does not automatically sync between different devices.
 
-DATA:
-- Vocabulary remains stored in IndexedDB in the browser/device.
-- Installing the PWA does NOT sync data between laptop and phone.
-- Export JSON backups regularly.
-- Do not clear the browser/site storage unless you have a backup.
-
-GITHUB PAGES:
-All file paths are relative (./), so this build is safe to host in a repository subpath such as:
-https://USERNAME.github.io/korean-visual-vocab/
+SRS MODEL
+This is a lightweight SM-2-inspired scheduling model, intentionally kept simpler than Anki/FSRS.
+It is designed for a personal vocabulary notebook, not as a research-grade scheduling engine.
