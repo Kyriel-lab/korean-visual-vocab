@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#f6f5f2" />
+  <title>Korean Visual Vocabulary</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">VISUAL KOREAN NOTEBOOK</div>
+      <h1>Korean Vocabulary</h1>
+    </div>
+    <div class="top-actions">
+      <button id="themeBtn" class="ghost-btn" title="Đổi giao diện">☾</button>
+      <button id="exportBtn" class="ghost-btn">Export</button>
+      <label class="ghost-btn file-label">
+        Import
+        <input id="importFile" type="file" accept=".json,application/json" hidden />
+      </label>
+      <button id="openAddBtn" class="primary-btn">＋ Add word</button>
+    </div>
+  </header>
+
+  <main>
+    <nav class="tabs" aria-label="Main">
+      <button class="tab active" data-view="library">Vocabulary</button>
+      <button class="tab" data-view="review">Review</button>
+    </nav>
+
+    <section id="libraryView" class="view active">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Search Korean, Vietnamese, tags…" />
+        </div>
+
+        <select id="statusFilter" aria-label="Lọc theo trạng thái">
+          <option value="">All status</option>
+          <option value="new">New</option>
+          <option value="learning">Learning</option>
+          <option value="learned">Learned</option>
+        </select>
+
+        <select id="tagFilter" aria-label="Lọc theo tag">
+          <option value="">All tags</option>
+        </select>
+
+        <button id="clearFiltersBtn" class="ghost-btn compact">Clear</button>
+      </div>
+
+      <div class="summary-row">
+        <div id="statsText">0 words</div>
+        <div class="view-toggle">
+          <button id="galleryBtn" class="mini-toggle active">▦ Gallery</button>
+          <button id="listBtn" class="mini-toggle">☷ List</button>
+        </div>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">한</div>
+        <h2>Kho từ vựng đang trống</h2>
+        <p>Thêm từ đầu tiên cùng hình ảnh để bắt đầu.</p>
+        <button id="emptyAddBtn" class="primary-btn">＋ Add first word</button>
+      </div>
+
+      <div id="wordGrid" class="word-grid"></div>
+    </section>
+
+    <section id="reviewView" class="view">
+      <div class="review-setup" id="reviewSetup">
+        <div>
+          <div class="eyebrow">REVIEW</div>
+          <h2>Ôn lại từ vựng</h2>
+          <p class="muted">Chọn cách gợi nhớ phù hợp. Bộ từ mặc định dùng toàn bộ kho.</p>
+        </div>
+
+        <div class="review-options">
+          <label>
+            Mode
+            <select id="reviewMode">
+              <option value="imageToKorean">Image → Korean</option>
+              <option value="koreanToMeaning">Korean → Meaning</option>
+              <option value="browse">Browse / Recall</option>
+            </select>
+          </label>
+
+          <label>
+            Words
+            <select id="reviewCount">
+              <option value="10">10 random words</option>
+              <option value="20" selected>20 random words</option>
+              <option value="50">50 random words</option>
+              <option value="all">All matching words</option>
+            </select>
+          </label>
+
+          <label>
+            Status
+            <select id="reviewStatus">
+              <option value="">All status</option>
+              <option value="new">New</option>
+              <option value="learning">Learning</option>
+              <option value="learned">Learned</option>
+            </select>
+          </label>
+
+          <label>
+            Tag
+            <select id="reviewTag">
+              <option value="">All tags</option>
+            </select>
+          </label>
+        </div>
+
+        <button id="startReviewBtn" class="primary-btn wide">Start review</button>
+      </div>
+
+      <div id="reviewSession" class="review-session hidden">
+        <div class="review-header">
+          <button id="exitReviewBtn" class="ghost-btn compact">← Exit</button>
+          <div id="reviewProgress">1 / 10</div>
+        </div>
+
+        <div class="progress-track"><div id="progressBar"></div></div>
+
+        <article id="reviewCard" class="review-card">
+          <div id="reviewImageWrap" class="review-image-wrap">
+            <img id="reviewImage" alt="" />
+            <div id="reviewImagePlaceholder" class="image-placeholder">No image</div>
+          </div>
+
+          <div id="reviewPrompt" class="review-prompt"></div>
+          <div id="reviewSubPrompt" class="review-subprompt"></div>
+
+          <form id="answerForm" class="answer-form">
+            <input id="answerInput" autocomplete="off" placeholder="Type your answer…" />
+            <button class="primary-btn" type="submit">Check</button>
+          </form>
+
+          <div id="revealArea" class="reveal-area hidden"></div>
+
+          <div id="browseActions" class="browse-actions hidden">
+            <button id="forgotBtn" class="ghost-btn">Forgot</button>
+            <button id="rememberedBtn" class="primary-btn">Remembered</button>
+          </div>
+
+          <button id="nextReviewBtn" class="primary-btn hidden">Next →</button>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="wordDialog">
+    <form id="wordForm" method="dialog">
+      <div class="dialog-head">
+        <div>
+          <div class="eyebrow">VOCABULARY</div>
+          <h2 id="dialogTitle">Add word</h2>
+        </div>
+        <button type="button" id="closeDialogBtn" class="icon-btn">×</button>
+      </div>
+
+      <input id="wordId" type="hidden" />
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Korean *</span>
+          <input id="koreanInput" required placeholder="사과" />
+        </label>
+
+        <label class="field">
+          <span>Vietnamese meaning *</span>
+          <input id="meaningInput" required placeholder="quả táo" />
+        </label>
+      </div>
+
+      <div class="image-input-panel">
+        <div class="image-preview" id="imagePreview">
+          <span>Paste, drop or upload an image</span>
+        </div>
+        <div class="image-actions">
+          <label class="ghost-btn file-label">
+            Upload image
+            <input id="imageFile" type="file" accept="image/*" hidden />
+          </label>
+          <button id="removeImageBtn" type="button" class="ghost-btn">Remove</button>
+          <span class="muted small">Tip: Ctrl+V để dán ảnh từ clipboard.</span>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Tags</span>
+          <input id="tagsInput" placeholder="food, TOPIK1, textbook-ch3" />
+        </label>
+
+        <label class="field">
+          <span>Status</span>
+          <select id="statusInput">
+            <option value="new">New</option>
+            <option value="learning">Learning</option>
+            <option value="learned">Learned</option>
+          </select>
+        </label>
+      </div>
+
+      <details>
+        <summary>More details</summary>
+        <div class="details-grid">
+          <label class="field">
+            <span>Part of speech</span>
+            <input id="posInput" placeholder="noun / verb / adjective…" />
+          </label>
+          <label class="field">
+            <span>Pronunciation</span>
+            <input id="pronunciationInput" placeholder="Optional" />
+          </label>
+          <label class="field full">
+            <span>Example sentence</span>
+            <textarea id="exampleInput" rows="3" placeholder="저는 사과를 좋아해요."></textarea>
+          </label>
+          <label class="field full">
+            <span>Notes</span>
+            <textarea id="notesInput" rows="3" placeholder="Anything worth remembering…"></textarea>
+          </label>
+        </div>
+      </details>
+
+      <div class="dialog-actions">
+        <button id="deleteWordBtn" type="button" class="danger-btn hidden">Delete</button>
+        <div class="spacer"></div>
+        <button id="cancelBtn" type="button" class="ghost-btn">Cancel</button>
+        <button type="submit" class="primary-btn">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="cardTemplate">
+    <article class="word-card">
+      <div class="card-image-wrap">
+        <img class="card-image" alt="" />
+        <div class="card-image-placeholder">No image</div>
+        <span class="status-badge"></span>
+      </div>
+      <div class="card-body">
+        <div class="korean-word"></div>
+        <div class="meaning"></div>
+        <div class="tag-row"></div>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
