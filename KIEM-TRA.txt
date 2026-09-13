@@ -1,0 +1,20 @@
+V1.5 — PHẠM VI KIỂM TRA
+
+Đã chạy:
+- Cú pháp JavaScript của app, module nhập hàng loạt và service worker.
+- CSV/TSV/dấu chấm phẩy, BOM UTF-8, ô có xuống dòng và dấu ngoặc kép, tiêu đề tiếng Việt/Hàn, từ chối cấu trúc lỗi.
+- Ghép tên ảnh, tên ảnh theo từ Hàn, xử lý thiếu ảnh và nhiều ảnh cùng tên.
+- Bỏ qua/cập nhật từ trùng, dòng không được chọn, từ trùng trong bảng và kho có nhiều bản giống nhau.
+- Cập nhật giữ ID, ngày tạo, trạng thái FSRS, lịch sử và ô tùy chọn để trống; từ mới bắt đầu New.
+- Kiểm tra lại logic ôn v1.4 bằng thư viện ts-fsrs 5.4.1 thực: Again/Good, hàng đợi đến hạn, hoàn tác, bộ đếm, sao lưu.
+- ID các phần tử giao diện và danh sách file cache.
+
+Chưa xác minh:
+Trình duyệt thật, IndexedDB thật, chọn/kéo ảnh, tải CSV, responsive, PWA/offline. Bộ cài trình duyệt không tải thành công trong môi trường này. Các kiểm tra logic dùng lưu trữ/DOM mô phỏng; không thay thế kiểm thử toàn bộ thao tác giao diện.
+
+Kiểm tra nhanh sau cập nhật:
+1. Export JSON trong app cũ trước khi upload toàn bộ file v1.5.
+2. Nhập 2 từ và 2 ảnh; kiểm tra ảnh/tiếng Hàn/nghĩa ở màn hình xem trước.
+3. Chọn bỏ qua từ trùng, rồi thử cập nhật một từ đã ôn. Lịch sử phải còn nguyên.
+4. Đóng/mở app và kiểm tra dữ liệu còn đủ.
+5. Thử một từ không ảnh; bổ sung ảnh sau qua Edit.

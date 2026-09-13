@@ -1,0 +1,8 @@
+Third-party component
+
+ts-fsrs 5.4.1
+Copyright (c) Open Spaced Repetition contributors
+License: MIT
+Project: https://github.com/open-spaced-repetition/ts-fsrs
+
+This app loads the pinned browser ESM build from jsDelivr and caches it for offline use.

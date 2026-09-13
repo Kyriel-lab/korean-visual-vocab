@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Korean Visual Vocabulary",
   "short_name": "Korean Vocab",
-  "description": "A personal visual Korean vocabulary notebook with spaced repetition.",
+  "description": "A visual Korean vocabulary notebook with FSRS-6 spaced repetition.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

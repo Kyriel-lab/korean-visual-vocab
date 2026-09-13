@@ -16,7 +16,7 @@
 <body>
   <header class="topbar">
     <div>
-      <div class="eyebrow">VISUAL KOREAN NOTEBOOK</div>
+      <div class="eyebrow">VISUAL KOREAN NOTEBOOK · v1.5</div>
       <h1>Korean Vocabulary</h1>
     </div>
     <div class="top-actions">
@@ -27,6 +27,7 @@
         <input id="importFile" type="file" accept=".json,application/json" hidden />
       </label>
       <button id="installBtn" class="ghost-btn hidden">Install app</button>
+      <button id="bulkOpenBtn" class="ghost-btn">Nhập hàng loạt</button>
       <button id="openAddBtn" class="primary-btn">＋ Add word</button>
     </div>
   </header>
@@ -58,6 +59,7 @@
         <button id="clearFiltersBtn" class="ghost-btn compact">Clear</button>
       </div>
 
+      <p id="backupNotice" class="muted small" aria-live="polite"></p>
       <div id="pwaNotice" class="pwa-notice hidden"></div>
 
       <div class="summary-row">
@@ -84,17 +86,19 @@
     <section id="reviewView" class="view">
       <div class="review-setup" id="reviewSetup">
         <div>
-          <div class="eyebrow">REVIEW</div>
+          <div class="eyebrow">REVIEW · FSRS</div>
           <h2>Ôn lại từ vựng</h2>
-          <p class="muted">Chọn cách gợi nhớ phù hợp. Bộ từ mặc định dùng toàn bộ kho.</p>
+          <p class="muted">Daily Review dùng FSRS-6 để quyết định từ nào cần xuất hiện và khi nào nên ôn lại.</p>
+          <div id="dailySummary" class="daily-summary"></div>
         </div>
 
         <div class="review-options">
           <label>
             Review set
             <select id="reviewSource">
-              <option value="due" selected>Spaced repetition · Due now</option>
-              <option value="all">All matching words</option>
+              <option value="daily" selected>Daily Review · FSRS</option>
+              <option value="dueOnly">Due reviews only</option>
+              <option value="practice">Practice · no scheduling</option>
             </select>
           </label>
 
@@ -107,8 +111,8 @@
             </select>
           </label>
 
-          <label>
-            Words
+          <label id="practiceCountLabel">
+            Practice size
             <select id="reviewCount">
               <option value="10">10 random words</option>
               <option value="20" selected>20 random words</option>
@@ -117,7 +121,7 @@
             </select>
           </label>
 
-          <label>
+          <label id="practiceStatusLabel">
             Status
             <select id="reviewStatus">
               <option value="">All status</option>
@@ -135,20 +139,50 @@
           </label>
         </div>
 
+        <details class="fsrs-settings">
+          <summary>FSRS settings</summary>
+          <div class="settings-grid">
+            <label class="field">
+              <span>Desired retention</span>
+              <input id="retentionInput" type="number" min="0.80" max="0.97" step="0.01" value="0.90" />
+              <small>0.90 = 90% target recall.</small>
+            </label>
+
+            <label class="field">
+              <span>New words / day</span>
+              <input id="newPerDayInput" type="number" min="0" max="200" step="1" value="20" />
+              <small>Giới hạn số từ mới bắt đầu học mỗi ngày.</small>
+            </label>
+
+            <label class="field">
+              <span>Max reviews / day</span>
+              <input id="maxReviewsInput" type="number" min="1" max="2000" step="1" value="200" />
+              <small>Chỉ tính lượt trả lời thẻ ở trạng thái Review. Learning/Relearning không bị giới hạn.</small>
+            </label>
+
+            <div class="fsrs-meta">
+              <strong>FSRS-6 · ts-fsrs 5.4.1</strong>
+              <span>Learning steps: 1m, 10m · Relearning: 10m · Maximum interval: 100 years</span>
+            </div>
+          </div>
+        </details>
+
         <button id="startReviewBtn" class="primary-btn wide">Start review</button>
       </div>
 
       <div id="reviewSession" class="review-session hidden">
         <div class="review-header">
           <button id="exitReviewBtn" class="ghost-btn compact">← Exit</button>
+          <button id="undoReviewBtn" class="ghost-btn compact" disabled>↶ Hoàn tác</button>
           <div id="reviewProgress">1 / 10</div>
         </div>
 
         <div class="progress-track"><div id="progressBar"></div></div>
 
+        <section id="sessionMessage" class="review-card hidden" aria-live="polite"><h2 id="sessionMessageTitle"></h2><p id="sessionMessageText"></p><button id="sessionBackBtn" class="primary-btn">Về thiết lập</button></section>
         <article id="reviewCard" class="review-card">
           <div id="reviewImageWrap" class="review-image-wrap">
-            <img id="reviewImage" alt="" />
+            <img id="reviewImage" alt="" /><button type="button" id="zoomImageBtn" class="ghost-btn">⤢ Phóng to ảnh</button>
             <div id="reviewImagePlaceholder" class="image-placeholder">No image</div>
           </div>
 
@@ -176,6 +210,7 @@
               <span>Easy</span><small id="easyInterval">7d</small>
             </button>
           </div>
+          <button id="practiceNextBtn" class="primary-btn hidden" type="button">Next →</button>
         </article>
       </div>
     </section>
@@ -214,6 +249,7 @@
             Upload image
             <input id="imageFile" type="file" accept="image/*" hidden />
           </label>
+          <button id="zoomPreviewBtn" type="button" class="ghost-btn">⤢ Phóng to</button>
           <button id="removeImageBtn" type="button" class="ghost-btn">Remove</button>
           <span class="muted small">Tip: Ctrl+V để dán ảnh từ clipboard.</span>
         </div>
@@ -226,18 +262,21 @@
         </label>
 
         <label class="field">
-          <span>Status</span>
-          <select id="statusInput">
+          <span>Study status</span>
+          <select id="statusInput" disabled>
             <option value="new">New</option>
             <option value="learning">Learning</option>
             <option value="learned">Learned</option>
           </select>
+          <small class="muted">Managed automatically by FSRS.</small>
         </label>
       </div>
 
       <details>
         <summary>More details</summary>
         <div class="details-grid">
+          <label class="field"><span>Đáp án tiếng Hàn khác được chấp nhận</span><textarea id="acceptedKoreanInput" rows="3" placeholder="Mỗi dòng một đáp án"></textarea></label>
+          <label class="field"><span>Nghĩa tiếng Việt khác được chấp nhận</span><textarea id="acceptedMeaningInput" rows="3" placeholder="Mỗi dòng một đáp án"></textarea></label>
           <label class="field">
             <span>Part of speech</span>
             <input id="posInput" placeholder="noun / verb / adjective…" />
@@ -266,6 +305,34 @@
     </form>
   </dialog>
 
+  <dialog id="imageZoomDialog" aria-label="Ảnh phóng to"><button id="closeZoomBtn" class="ghost-btn" autofocus>Đóng ×</button><img id="zoomedImage" alt="Ảnh từ vựng phóng to"></dialog>
+
+
+  <dialog id="bulkDialog" aria-labelledby="bulkTitle">
+    <div class="dialog-head"><div><div class="eyebrow">BULK IMPORT · v1.5</div><h2 id="bulkTitle">Nhập từ và ảnh hàng loạt</h2></div><button id="bulkCloseBtn" class="ghost-btn" type="button">Đóng ×</button></div>
+    <p class="muted">Chọn CSV UTF-8 hoặc dán các ô từ Excel. Cần hai cột <strong>korean</strong> và <strong>meaning</strong>. Thêm <strong>image</strong> để ghép tên file ảnh. Có thể nhập từ chưa có ảnh.</p>
+    <fieldset id="bulkControls">
+      <div class="bulk-actions">
+        <label class="ghost-btn file-label">Chọn CSV / TSV<input id="bulkCsvFile" type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values" hidden></label>
+        <a class="ghost-btn" href="./bulk-template.csv" download>Tải bảng mẫu CSV</a>
+        <label class="field"><span>Dấu phân cách</span><select id="bulkSeparator"><option value="auto">Tự nhận diện</option><option value=",">Dấu phẩy</option><option value=";">Dấu chấm phẩy</option><option value="&#9;">Tab (Excel)</option></select></label>
+      </div>
+      <label class="field"><span>Dán bảng từ Excel hoặc nội dung CSV</span><textarea id="bulkText" rows="5" placeholder="korean,meaning,image,tags&#10;사과,quả táo,apple.jpg,food&#10;학교,trường học,school.jpg,places"></textarea></label>
+      <div class="bulk-actions">
+        <button id="bulkAnalyzeBtn" class="primary-btn" type="button">1. Xem trước bảng</button>
+        <label class="ghost-btn file-label">2. Chọn nhiều ảnh<input id="bulkImages" type="file" accept="image/*" multiple hidden></label>
+        <button id="bulkClearImages" class="ghost-btn" type="button">Xóa ảnh đã chọn</button>
+      </div>
+      <p id="bulkImageCount" class="muted small">0 ảnh đã chọn.</p>
+      <label class="field"><span>Nếu từ tiếng Hàn đã có trong kho</span><select id="bulkDuplicatePolicy"><option value="skip">Bỏ qua từ trùng (mặc định)</option><option value="update">Cập nhật nội dung, giữ lịch ôn</option></select></label>
+      <p class="muted small">Ô tùy chọn để trống sẽ giữ nội dung cũ. Để trống cột image: thử ghép tên ảnh theo từ tiếng Hàn (ví dụ 사과.jpg). Nếu thiếu ảnh khi cập nhật, giữ ảnh cũ. Mỗi lần tối đa 1.000 dòng.</p>
+    </fieldset>
+    <p id="bulkMessage" role="status" aria-live="polite"></p>
+    <p id="bulkSummary" class="muted"></p>
+    <div id="bulkPreview" class="bulk-table-wrap hidden"><table><thead><tr><th>Chọn</th><th>Dòng</th><th>Tiếng Hàn</th><th>Nghĩa</th><th>Ảnh · kéo thả vào ô</th><th>Kết quả</th></tr></thead><tbody id="bulkPreviewBody"></tbody></table></div>
+    <div class="bulk-footer"><button id="bulkSaveBtn" class="primary-btn" type="button" disabled>Nhập 0 từ đã chọn</button><span class="muted small">Chỉ lưu khi bạn nhấn nút này. Nên Export bản sao lưu trước khi cập nhật nhiều từ.</span></div>
+  </dialog>
+
   <template id="cardTemplate">
     <article class="word-card">
       <div class="card-image-wrap">
@@ -281,6 +348,6 @@
     </article>
   </template>
 
-  <script src="app.js"></script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
