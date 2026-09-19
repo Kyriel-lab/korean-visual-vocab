@@ -165,6 +165,46 @@ summary { cursor:pointer; font-weight:700; }
 .review-subprompt { color:var(--muted); margin-top:7px; }
 .answer-form { display:flex; gap:10px; max-width:520px; margin:24px auto 0; }
 .answer-form input { flex:1; }
+.hangul-keyboard {
+  max-width: 640px;
+  margin: 14px auto 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--soft);
+  text-align: left;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.hangul-keyboard.answered { display:none; }
+.hangul-keyboard-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.hangul-keyboard-head strong { font-size:14px; }
+.hangul-keyboard-head small { color:var(--muted); font-size:11px; }
+.keyboard-collapse { border:0; background:transparent; color:var(--muted); padding:4px; font-size:12px; font-weight:750; }
+.hangul-keyboard-body { display:flex; flex-direction:column; gap:6px; }
+.keyboard-row { display:grid; gap:6px; }
+.keyboard-row-top { grid-template-columns:repeat(10,minmax(0,1fr)); }
+.keyboard-row-middle { grid-template-columns:repeat(9,minmax(0,1fr)); padding:0 4%; }
+.keyboard-row-bottom { grid-template-columns:repeat(9,minmax(0,1fr)); padding:0 2%; }
+.keyboard-row button {
+  min-width:0;
+  min-height:44px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:8px 3px;
+  background:var(--panel);
+  color:var(--text);
+  box-shadow:0 2px 0 rgba(0,0,0,.08);
+  font-size:20px;
+  font-weight:750;
+  touch-action:manipulation;
+}
+.keyboard-row button:hover { border-color:var(--text); transform:translateY(-1px); }
+.keyboard-row button:active { transform:translateY(1px); box-shadow:none; }
+.keyboard-row .keyboard-special { background:var(--bg); font-size:15px; }
+.keyboard-row .shift-key.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.keyboard-actions { grid-template-columns:1fr 2fr 1.35fr; margin-top:2px; }
+.keyboard-actions .keyboard-enter { background:var(--accent); color:var(--bg); border-color:var(--accent); font-size:14px; }
 .reveal-area { margin:22px auto 0; max-width:580px; padding:18px; border-radius:15px; background:var(--soft); text-align:left; }
 .reveal-area .big { font-size:28px; font-weight:800; }
 .browse-actions { display:flex; justify-content:center; gap:10px; margin-top:24px; }
@@ -184,6 +224,11 @@ summary { cursor:pointer; font-weight:700; }
   .primary-btn, .ghost-btn { font-size:14px; }
   .review-card { padding:16px; }
   .review-prompt { font-size:30px; }
+  .hangul-keyboard { padding:8px; margin-top:12px; }
+  .hangul-keyboard-head small { display:none; }
+  .hangul-keyboard-body, .keyboard-row { gap:4px; }
+  .keyboard-row button { min-height:42px; border-radius:7px; font-size:18px; padding:7px 1px; }
+  .keyboard-row .keyboard-special, .keyboard-actions .keyboard-enter { font-size:12px; }
 }
 
 

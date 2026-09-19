@@ -16,7 +16,7 @@
 <body>
   <header class="topbar">
     <div>
-      <div class="eyebrow">VISUAL KOREAN NOTEBOOK · v1.5</div>
+      <div class="eyebrow">VISUAL KOREAN NOTEBOOK · v1.6</div>
       <h1>Korean Vocabulary</h1>
     </div>
     <div class="top-actions">
@@ -194,6 +194,27 @@
             <button class="primary-btn" type="submit">Check</button>
           </form>
 
+          <section id="hangulKeyboard" class="hangul-keyboard hidden" aria-label="Bàn phím tiếng Hàn ảo">
+            <div class="hangul-keyboard-head">
+              <span><strong>한글 키보드</strong><small> Bàn phím Hàn · 두벌식</small></span>
+              <button type="button" class="keyboard-collapse" data-action="collapse" aria-expanded="true">Thu gọn</button>
+            </div>
+            <div class="hangul-keyboard-body" data-keyboard-body>
+              <div class="keyboard-row keyboard-row-top">
+                <button type="button" data-key="ㅂ" data-shift="ㅃ">ㅂ</button><button type="button" data-key="ㅈ" data-shift="ㅉ">ㅈ</button><button type="button" data-key="ㄷ" data-shift="ㄸ">ㄷ</button><button type="button" data-key="ㄱ" data-shift="ㄲ">ㄱ</button><button type="button" data-key="ㅅ" data-shift="ㅆ">ㅅ</button><button type="button" data-key="ㅛ">ㅛ</button><button type="button" data-key="ㅕ">ㅕ</button><button type="button" data-key="ㅑ">ㅑ</button><button type="button" data-key="ㅐ" data-shift="ㅒ">ㅐ</button><button type="button" data-key="ㅔ" data-shift="ㅖ">ㅔ</button>
+              </div>
+              <div class="keyboard-row keyboard-row-middle">
+                <button type="button" data-key="ㅁ">ㅁ</button><button type="button" data-key="ㄴ">ㄴ</button><button type="button" data-key="ㅇ">ㅇ</button><button type="button" data-key="ㄹ">ㄹ</button><button type="button" data-key="ㅎ">ㅎ</button><button type="button" data-key="ㅗ">ㅗ</button><button type="button" data-key="ㅓ">ㅓ</button><button type="button" data-key="ㅏ">ㅏ</button><button type="button" data-key="ㅣ">ㅣ</button>
+              </div>
+              <div class="keyboard-row keyboard-row-bottom">
+                <button type="button" class="keyboard-special shift-key" data-action="shift" aria-pressed="false">⇧</button><button type="button" data-key="ㅋ">ㅋ</button><button type="button" data-key="ㅌ">ㅌ</button><button type="button" data-key="ㅊ">ㅊ</button><button type="button" data-key="ㅍ">ㅍ</button><button type="button" data-key="ㅠ">ㅠ</button><button type="button" data-key="ㅜ">ㅜ</button><button type="button" data-key="ㅡ">ㅡ</button><button type="button" class="keyboard-special backspace-key" data-action="backspace" aria-label="Xóa ký tự">⌫</button>
+              </div>
+              <div class="keyboard-row keyboard-actions">
+                <button type="button" class="keyboard-special" data-action="clear">Xóa hết</button><button type="button" class="keyboard-special space-key" data-action="space">Khoảng trắng</button><button type="button" class="keyboard-enter" data-action="enter">Kiểm tra ↵</button>
+              </div>
+            </div>
+          </section>
+
           <div id="revealArea" class="reveal-area hidden"></div>
 
           <div id="srsActions" class="srs-actions hidden">
@@ -309,7 +330,7 @@
 
 
   <dialog id="bulkDialog" aria-labelledby="bulkTitle">
-    <div class="dialog-head"><div><div class="eyebrow">BULK IMPORT · v1.5</div><h2 id="bulkTitle">Nhập từ và ảnh hàng loạt</h2></div><button id="bulkCloseBtn" class="ghost-btn" type="button">Đóng ×</button></div>
+    <div class="dialog-head"><div><div class="eyebrow">BULK IMPORT · v1.6</div><h2 id="bulkTitle">Nhập từ và ảnh hàng loạt</h2></div><button id="bulkCloseBtn" class="ghost-btn" type="button">Đóng ×</button></div>
     <p class="muted">Chọn CSV UTF-8 hoặc dán các ô từ Excel. Cần hai cột <strong>korean</strong> và <strong>meaning</strong>. Thêm <strong>image</strong> để ghép tên file ảnh. Có thể nhập từ chưa có ảnh.</p>
     <fieldset id="bulkControls">
       <div class="bulk-actions">

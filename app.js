@@ -1,4 +1,5 @@
 import { initBulkImport } from "./bulk-import.js";
+import { initHangulKeyboard } from "./hangul-keyboard.js";
 import {
   createEmptyCard,
   fsrs,
@@ -31,6 +32,7 @@ let undoState = null;
 let sessionActive = false;
 let sessionTag = "";
 let waitTimer = null;
+let hangulKeyboard = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -653,6 +655,8 @@ function renderReviewCard() {
   srsActions.classList.add("hidden");
   practiceNext.classList.add("hidden");
   input.value = "";
+  hangulKeyboard?.reset();
+  hangulKeyboard?.prepareForQuestion();
 
   if (w.image) {
     img.src = w.image;
@@ -669,6 +673,7 @@ function renderReviewCard() {
     $("reviewPrompt").innerHTML = `<span class="review-state-pill">${escapeHTML(stateLabel(card))}</span><br>What is this in Korean?`;
     $("reviewSubPrompt").textContent = "";
     form.classList.remove("hidden");
+    hangulKeyboard?.setAvailable(true);
     input.placeholder = "한국어로 입력하세요…";
     setTimeout(() => input.focus(), 60);
   } else if (mode === "koreanToMeaning") {
@@ -676,6 +681,7 @@ function renderReviewCard() {
     $("reviewPrompt").innerHTML = `<span class="review-state-pill">${escapeHTML(stateLabel(card))}</span><br>${escapeHTML(w.korean)}`;
     $("reviewSubPrompt").textContent = "What does it mean?";
     form.classList.remove("hidden");
+    hangulKeyboard?.setAvailable(false);
     input.placeholder = "Nhập nghĩa tiếng Việt…";
     setTimeout(() => input.focus(), 60);
   } else {
@@ -683,6 +689,7 @@ function renderReviewCard() {
     $("reviewPrompt").innerHTML = `<span class="review-state-pill">${escapeHTML(stateLabel(card))}</span><br>${escapeHTML(w.korean)}`;
     $("reviewSubPrompt").textContent = "Recall the meaning, then reveal.";
     form.classList.add("hidden");
+    hangulKeyboard?.setAvailable(false);
     reveal.classList.remove("hidden");
     reveal.innerHTML = `<button id="revealBrowseBtn" class="ghost-btn">Reveal answer</button>`;
     document.getElementById("revealBrowseBtn").addEventListener("click", () => revealAnswer(w));
@@ -819,6 +826,11 @@ window.addEventListener("appinstalled", () => {
 document.addEventListener("DOMContentLoaded", async () => {
   configureScheduler();
   db = await openDB();
+  hangulKeyboard = initHangulKeyboard({
+    root: $("hangulKeyboard"),
+    input: $("answerInput"),
+    form: $("answerForm")
+  });
   initBulkImport({
     getWords: getAllWords,
     saveWords: words => new Promise((resolve, reject) => {
@@ -953,6 +965,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const aliases = mode === "imageToKorean" ? w.acceptedKorean : w.acceptedMeaning;
     const correct = [expected, ...(aliases || []).map(normalize)].includes(userAnswer);
     const feedback = `<div style="font-weight:800;margin-bottom:9px">${correct ? "✓ Correct" : "Chưa khớp đáp án đã lưu — hãy đối chiếu và tự đánh giá"}</div>`;
+    hangulKeyboard?.hideAfterAnswer();
     revealAnswer(w, feedback);
   });
 

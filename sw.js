@@ -1,4 +1,4 @@
-const CACHE_VERSION = "korean-visual-vocab-v1.5.0";
+const CACHE_VERSION = "korean-visual-vocab-v1.6.0";
 const FSRS_MODULE = "https://cdn.jsdelivr.net/npm/ts-fsrs@5.4.1/+esm";
 
 const APP_SHELL = [
@@ -6,6 +6,7 @@ const APP_SHELL = [
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./hangul-keyboard.js",
   "./bulk-import.js",
   "./bulk-template.csv",
   "./manifest.webmanifest",

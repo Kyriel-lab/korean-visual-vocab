@@ -1,15 +1,24 @@
-KOREAN VISUAL VOCABULARY — V1.5 FSRS
+KOREAN VISUAL VOCABULARY — V1.6 FSRS + BÀN PHÍM HANGUL
 
 CẬP NHẬT
 1. Trong app cũ, nhấn Export và giữ file JSON trước khi cập nhật.
 2. Giải nén ZIP. Upload toàn bộ các file bên trong lên thư mục gốc repo GitHub hiện tại, thay các file cùng tên.
 3. Commit và chờ GitHub Pages triển khai. Mở lại đúng địa chỉ cũ, nhấn Ctrl+Shift+R.
-4. Đóng/mở lại PWA nếu cần. Dòng tiêu đề phải có v1.5.
+4. Đóng/mở lại PWA nếu cần. Dòng tiêu đề phải có v1.6.
 Không đổi tên cơ sở dữ liệu: từ vựng, ảnh và FSRS v1.3 vẫn được giữ khi dùng cùng địa chỉ/trình duyệt.
 ZIP chứa mã ứng dụng, không chứa kho từ cá nhân trên thiết bị của bạn.
 
 
-NHẬP HÀNG LOẠT — V1.5
+ÔN TẬP VỚI BÀN PHÍM HANGUL — V1.6
+1. Chọn Review và Mode “Image → Korean”. Bàn phím Hàn sẽ hiện dưới ô trả lời.
+2. Bấm phụ âm/nguyên âm; app tự ghép âm tiết, ví dụ ㅎ + ㅏ + ㄴ thành 한.
+3. Shift dùng cho ㄲ, ㄸ, ㅃ, ㅆ, ㅉ, ㅒ, ㅖ và tự tắt sau một phím.
+4. Có Xóa ký tự, Xóa hết, Khoảng trắng và Kiểm tra. Nút Thu gọn ghi nhớ lựa chọn trên thiết bị.
+5. Bàn phím chỉ hỗ trợ nhập đáp án; cách chấm, Practice, FSRS và lịch sử ôn không thay đổi.
+6. Bàn phím vật lý và bộ gõ tiếng Hàn của thiết bị vẫn dùng bình thường.
+
+
+NHẬP HÀNG LOẠT — V1.6
 1. Trong app, nhấn Nhập hàng loạt.
 2. Nhấn Tải bảng mẫu CSV. Thay các dòng ví dụ bằng từ của bạn.
 3. Cột bắt buộc: korean, meaning. Cột tùy chọn: image, tags, example, pronunciation, pos, notes, acceptedKorean, acceptedMeaning.
