@@ -16,7 +16,7 @@
 <body>
   <header class="topbar">
     <div>
-      <div class="eyebrow">VISUAL KOREAN NOTEBOOK · v1.6.1</div>
+      <div class="eyebrow">VISUAL KOREAN NOTEBOOK · v1.6.2</div>
       <h1>Korean Vocabulary</h1>
     </div>
     <div class="top-actions">
@@ -192,6 +192,11 @@
           <div id="reviewPrompt" class="review-prompt"></div>
           <div id="reviewSubPrompt" class="review-subprompt"></div>
 
+          <div id="meaningHint" class="meaning-hint hidden">
+            <button id="toggleMeaningHintBtn" class="meaning-hint-btn" type="button" aria-expanded="false">Gợi ý nghĩa tiếng Việt <kbd>H</kbd></button>
+            <div id="meaningHintText" class="meaning-hint-text hidden" aria-live="polite"></div>
+          </div>
+
           <form id="answerForm" class="answer-form">
             <input id="answerInput" autocomplete="off" placeholder="Type your answer…" />
             <button class="primary-btn" type="submit">Check</button>
@@ -335,7 +340,7 @@
 
 
   <dialog id="bulkDialog" aria-labelledby="bulkTitle">
-    <div class="dialog-head"><div><div class="eyebrow">BULK IMPORT · v1.6.1</div><h2 id="bulkTitle">Nhập từ và ảnh hàng loạt</h2></div><button id="bulkCloseBtn" class="ghost-btn" type="button">Đóng ×</button></div>
+    <div class="dialog-head"><div><div class="eyebrow">BULK IMPORT · v1.6.2</div><h2 id="bulkTitle">Nhập từ và ảnh hàng loạt</h2></div><button id="bulkCloseBtn" class="ghost-btn" type="button">Đóng ×</button></div>
     <p class="muted">Chọn CSV UTF-8 hoặc dán các ô từ Excel. Cần hai cột <strong>korean</strong> và <strong>meaning</strong>. Thêm <strong>image</strong> để ghép tên file ảnh. Có thể nhập từ chưa có ảnh.</p>
     <fieldset id="bulkControls">
       <div class="bulk-actions">

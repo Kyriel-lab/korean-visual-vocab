@@ -659,6 +659,7 @@ function renderReviewCard() {
   hangulKeyboard?.reset();
   hangulKeyboard?.prepareForQuestion();
   cardLayout.classList.toggle("image-visible", mode === "imageToKorean" || (mode === "browse" && Boolean(w.image)));
+  resetMeaningHint(w, mode === "imageToKorean");
 
   if (w.image) {
     img.src = w.image;
@@ -706,6 +707,28 @@ function answerHTML(w, feedback = "") {
     w.notes ? `<div style="margin-top:10px"><strong>Notes:</strong><br>${escapeHTML(w.notes)}</div>` : ""
   ].join("");
   return `${feedback}<div class="big">${escapeHTML(w.korean)}</div><div>${escapeHTML(w.meaning)}</div>${details}`;
+}
+
+function resetMeaningHint(word, enabled) {
+  const wrap = $("meaningHint");
+  const text = $("meaningHintText");
+  const button = $("toggleMeaningHintBtn");
+  wrap.classList.toggle("hidden", !enabled);
+  text.classList.add("hidden");
+  text.textContent = enabled ? word.meaning : "";
+  button.setAttribute("aria-expanded", "false");
+  button.innerHTML = `Gợi ý nghĩa tiếng Việt <kbd>H</kbd>`;
+}
+
+function toggleMeaningHint() {
+  const wrap = $("meaningHint");
+  if (wrap.classList.contains("hidden")) return;
+  const text = $("meaningHintText");
+  const button = $("toggleMeaningHintBtn");
+  const show = text.classList.contains("hidden");
+  text.classList.toggle("hidden", !show);
+  button.setAttribute("aria-expanded", String(show));
+  button.innerHTML = `${show ? "Ẩn gợi ý" : "Gợi ý nghĩa tiếng Việt"} <kbd>H</kbd>`;
 }
 
 function revealAnswer(word, feedback = "") {
@@ -956,6 +979,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     startReview(true);
   });
   $("exitReviewBtn").addEventListener("click", exitReview);
+  $("toggleMeaningHintBtn").addEventListener("click", toggleMeaningHint);
+  document.addEventListener("keydown", event => {
+    if (!sessionActive || event.repeat || event.ctrlKey || event.altKey || event.metaKey) return;
+    if (event.key.toLowerCase() !== "h" || $("meaningHint").classList.contains("hidden")) return;
+    event.preventDefault();
+    toggleMeaningHint();
+  });
 
   $("answerForm").addEventListener("submit", e => {
     e.preventDefault();
@@ -968,6 +998,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const correct = [expected, ...(aliases || []).map(normalize)].includes(userAnswer);
     const feedback = `<div style="font-weight:800;margin-bottom:9px">${correct ? "✓ Correct" : "Chưa khớp đáp án đã lưu — hãy đối chiếu và tự đánh giá"}</div>`;
     hangulKeyboard?.hideAfterAnswer();
+    $("meaningHint").classList.add("hidden");
     revealAnswer(w, feedback);
   });
 

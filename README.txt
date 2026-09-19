@@ -1,22 +1,29 @@
-KOREAN VISUAL VOCABULARY — V1.6.1 FSRS + BÀN PHÍM HANGUL
+KOREAN VISUAL VOCABULARY — V1.6.2 FSRS + BÀN PHÍM HANGUL
 
 CẬP NHẬT
 1. Trong app cũ, nhấn Export và giữ file JSON trước khi cập nhật.
 2. Giải nén ZIP. Upload toàn bộ các file bên trong lên thư mục gốc repo GitHub hiện tại, thay các file cùng tên.
 3. Commit và chờ GitHub Pages triển khai. Mở lại đúng địa chỉ cũ, nhấn Ctrl+Shift+R.
-4. Đóng/mở lại PWA nếu cần. Dòng tiêu đề phải có v1.6.1.
+4. Đóng/mở lại PWA nếu cần. Dòng tiêu đề phải có v1.6.2.
 Không đổi tên cơ sở dữ liệu: từ vựng, ảnh và FSRS v1.3 vẫn được giữ khi dùng cùng địa chỉ/trình duyệt.
 ZIP chứa mã ứng dụng, không chứa kho từ cá nhân trên thiết bị của bạn.
 
 
-GIAO DIỆN ÔN TẬP TRÊN LAPTOP — V1.6.1
+GỢI Ý NGHĨA KHI ÔN — V1.6.2
+1. Trong Image → Korean, nhấn “Gợi ý nghĩa tiếng Việt” hoặc phím H khi hình chưa đủ rõ.
+2. Gợi ý chỉ hiện nghĩa tiếng Việt, không lộ từ tiếng Hàn.
+3. Gợi ý mặc định ẩn lại ở mỗi thẻ và biến mất sau khi kiểm tra đáp án.
+4. Việc dùng gợi ý không tự thay đổi FSRS; người học vẫn tự chọn Again/Hard/Good/Easy.
+
+
+GIAO DIỆN ÔN TẬP TRÊN LAPTOP — V1.6.2
 1. Khi thẻ có ảnh, màn hình Review dùng hai cột: ảnh lớn bên trái; câu hỏi, ô trả lời và bàn phím bên phải.
 2. Ảnh hiển thị đầy đủ theo tỉ lệ vuông, không cần phóng to trong hầu hết trường hợp.
 3. Chế độ không dùng ảnh tự căn phần trả lời vào giữa.
 4. Cửa sổ hẹp dưới 980px tự chuyển về bố cục dọc.
 
 
-ÔN TẬP VỚI BÀN PHÍM HANGUL — V1.6.1
+ÔN TẬP VỚI BÀN PHÍM HANGUL — V1.6.2
 1. Chọn Review và Mode “Image → Korean”. Bàn phím Hàn sẽ hiện dưới ô trả lời.
 2. Bấm phụ âm/nguyên âm; app tự ghép âm tiết, ví dụ ㅎ + ㅏ + ㄴ thành 한.
 3. Shift dùng cho ㄲ, ㄸ, ㅃ, ㅆ, ㅉ, ㅒ, ㅖ và tự tắt sau một phím.
@@ -25,7 +32,7 @@ GIAO DIỆN ÔN TẬP TRÊN LAPTOP — V1.6.1
 6. Bàn phím vật lý và bộ gõ tiếng Hàn của thiết bị vẫn dùng bình thường.
 
 
-NHẬP HÀNG LOẠT — V1.6.1
+NHẬP HÀNG LOẠT — V1.6.2
 1. Trong app, nhấn Nhập hàng loạt.
 2. Nhấn Tải bảng mẫu CSV. Thay các dòng ví dụ bằng từ của bạn.
 3. Cột bắt buộc: korean, meaning. Cột tùy chọn: image, tags, example, pronunciation, pos, notes, acceptedKorean, acceptedMeaning.
