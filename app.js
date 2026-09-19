@@ -650,6 +650,7 @@ function renderReviewCard() {
   const srsActions = $("srsActions");
   const practiceNext = $("practiceNextBtn");
   const input = $("answerInput");
+  const cardLayout = $("reviewCardLayout");
 
   reveal.classList.add("hidden");
   srsActions.classList.add("hidden");
@@ -657,6 +658,7 @@ function renderReviewCard() {
   input.value = "";
   hangulKeyboard?.reset();
   hangulKeyboard?.prepareForQuestion();
+  cardLayout.classList.toggle("image-visible", mode === "imageToKorean" || (mode === "browse" && Boolean(w.image)));
 
   if (w.image) {
     img.src = w.image;

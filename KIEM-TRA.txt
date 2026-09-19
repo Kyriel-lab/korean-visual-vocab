@@ -1,4 +1,4 @@
-V1.6 — PHẠM VI KIỂM TRA
+V1.6.1 — PHẠM VI KIỂM TRA
 
 Đã chạy:
 - Cú pháp JavaScript của app, module nhập hàng loạt và service worker.
@@ -12,12 +12,14 @@ V1.6 — PHẠM VI KIỂM TRA
 - Chuỗi thử: 한글, 학교, 수업, 과, 값, 가가, 깨, 의사, 화요일, 파마하다.
 - Bàn phím ảo có Shift một lần, xóa từng bước, xóa hết, khoảng trắng, gửi đáp án và thu gọn.
 - Bàn phím chỉ được bật cho Image → Korean; không sửa dữ liệu thẻ hoặc lịch FSRS.
+- Bố cục Review hai cột ở màn hình laptop; ảnh vuông hiển thị đầy đủ bằng object-fit contain.
+- Bố cục không ảnh tự về một cột; màn hình dưới 980px tự xếp dọc.
 
 Chưa xác minh:
 Trình duyệt thật, IndexedDB thật, chọn/kéo ảnh, tải CSV, responsive, PWA/offline. Bộ cài trình duyệt không tải thành công trong môi trường này. Các kiểm tra logic dùng lưu trữ/DOM mô phỏng; không thay thế kiểm thử toàn bộ thao tác giao diện.
 
 Kiểm tra nhanh sau cập nhật:
-1. Export JSON trong app cũ trước khi upload toàn bộ file v1.6.
+1. Export JSON trong app cũ trước khi upload toàn bộ file v1.6.1.
 2. Nhập 2 từ và 2 ảnh; kiểm tra ảnh/tiếng Hàn/nghĩa ở màn hình xem trước.
 3. Chọn bỏ qua từ trùng, rồi thử cập nhật một từ đã ôn. Lịch sử phải còn nguyên.
 4. Đóng/mở app và kiểm tra dữ liệu còn đủ.

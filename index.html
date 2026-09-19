@@ -16,7 +16,7 @@
 <body>
   <header class="topbar">
     <div>
-      <div class="eyebrow">VISUAL KOREAN NOTEBOOK · v1.6</div>
+      <div class="eyebrow">VISUAL KOREAN NOTEBOOK · v1.6.1</div>
       <h1>Korean Vocabulary</h1>
     </div>
     <div class="top-actions">
@@ -181,11 +181,14 @@
 
         <section id="sessionMessage" class="review-card hidden" aria-live="polite"><h2 id="sessionMessageTitle"></h2><p id="sessionMessageText"></p><button id="sessionBackBtn" class="primary-btn">Về thiết lập</button></section>
         <article id="reviewCard" class="review-card">
-          <div id="reviewImageWrap" class="review-image-wrap">
-            <img id="reviewImage" alt="" /><button type="button" id="zoomImageBtn" class="ghost-btn">⤢ Phóng to ảnh</button>
-            <div id="reviewImagePlaceholder" class="image-placeholder">No image</div>
-          </div>
-
+          <div id="reviewCardLayout" class="review-card-layout">
+            <div class="review-visual-column">
+              <div id="reviewImageWrap" class="review-image-wrap">
+                <img id="reviewImage" alt="" /><button type="button" id="zoomImageBtn" class="ghost-btn">⤢ Phóng to ảnh</button>
+                <div id="reviewImagePlaceholder" class="image-placeholder">No image</div>
+              </div>
+            </div>
+            <div class="review-answer-column">
           <div id="reviewPrompt" class="review-prompt"></div>
           <div id="reviewSubPrompt" class="review-subprompt"></div>
 
@@ -231,7 +234,9 @@
               <span>Easy</span><small id="easyInterval">7d</small>
             </button>
           </div>
-          <button id="practiceNextBtn" class="primary-btn hidden" type="button">Next →</button>
+              <button id="practiceNextBtn" class="primary-btn hidden" type="button">Next →</button>
+            </div>
+          </div>
         </article>
       </div>
     </section>
@@ -330,7 +335,7 @@
 
 
   <dialog id="bulkDialog" aria-labelledby="bulkTitle">
-    <div class="dialog-head"><div><div class="eyebrow">BULK IMPORT · v1.6</div><h2 id="bulkTitle">Nhập từ và ảnh hàng loạt</h2></div><button id="bulkCloseBtn" class="ghost-btn" type="button">Đóng ×</button></div>
+    <div class="dialog-head"><div><div class="eyebrow">BULK IMPORT · v1.6.1</div><h2 id="bulkTitle">Nhập từ và ảnh hàng loạt</h2></div><button id="bulkCloseBtn" class="ghost-btn" type="button">Đóng ×</button></div>
     <p class="muted">Chọn CSV UTF-8 hoặc dán các ô từ Excel. Cần hai cột <strong>korean</strong> và <strong>meaning</strong>. Thêm <strong>image</strong> để ghép tên file ảnh. Có thể nhập từ chưa có ảnh.</p>
     <fieldset id="bulkControls">
       <div class="bulk-actions">
